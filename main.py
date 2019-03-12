@@ -1,6 +1,4 @@
-from flask import Flask, abort, make_response, request, jsonify
-import ast
-import json
+from flask import Flask, make_response, request, jsonify
 import urllib
 
 app = Flask(__name__)
@@ -14,31 +12,33 @@ def home():
 
 @app.route("/job-bot", methods=['POST'])
 def post():
-    if request.get_data():
-        # print("HEADERS", request.headers)
-        data = request.get_data().decode('utf-8')
-        return generate_convention(data)
+    json_data = urllib.parse.parse_qs(request.get_data().decode('utf-8'))
+    user = json_data.get('text')
+    if user:
+        user = ''.join(user)
+        print(user)
+        return generate_convention(user)
     else:
         return "_Oops! Type /job-bot @username!_"
 
 
-def generate_convention(data):
-    json_data = urllib.parse.parse_qs(data)
-    print(json_data)
-    conv = "Hi <@" + ''.join(json_data['user_id']) + "> ! HERE IS THE CONVENTION. STICK TO IT!\n\n"
+def generate_convention(username):
+    try:
+        response_msg = {"response_type": "ephemeral", "text": "Hi <" + username + "> ! Please follow the CoC job posting conventions. Thanks!\n\n" + """
+        *Job Posting Conventions with examples*
+        Principal Posters:
+        [Principal] [Company Name] [Website or Link to Job Posting or Job Description Text] [Contact Information or Offer to Discuss in DMs]
+        
+        Example: [Principal] [SpaceX] [www.spacex.com] [www.linktojobposting.com] [Email Elon or feel free to DM]
+        Third Party Recruiters:
+        [Third Party Recruiter] [Recruiting Company Name] [Recruiting Company Website] [Job Description Text or Link to Job Description] [Contact Information or Offer to Discuss in DMs]
+        
+        Example: [Third Party Recruiter] [re-factor] [re-factor.co] [Build Software for shuttle launches, etc.] [Email me at matt@re-factor.co or feel free to direct message for details]
+        """}
 
-    static_msg = """
-    *Job Posting Conventions with examples*
-    Principal Posters:
-    [Principal] [Company Name] [Website or Link to Job Posting or Job Description Text] [Contact Information or Offer to Discuss in DMs]
-    
-    Example: [Principal] [SpaceX] [www.spacex.com] [www.linktojobposting.com] [Email Elon or feel free to DM]
-    Third Party Recruiters:
-    [Third Party Recruiter] [Recruiting Company Name] [Recruiting Company Website] [Job Description Text or Link to Job Description] [Contact Information or Offer to Discuss in DMs]
-    
-    Example: [Third Party Recruiter] [re-factor] [re-factor.co] [Build Software for shuttle launches, etc.] [Email me at matt@re-factor.co or feel free to direct message for details]
-    """
-    return make_response(conv+static_msg, 201)
+        return jsonify(response_msg)
+    except:
+        return "ERROR in message"
 
 
 if __name__ == "__main__":
