@@ -10,7 +10,9 @@
 
 
 ##### Notes on implementation: 
-1. the Flask app accepts a post request, then checks if the request has any data. 
+Example usage: /job-bot @username. /job-bot @janesmith. 
+1. So far, I've only tested it with my user. Would be nice to have someone else join the slack workspace and test it. 
+2. the Flask app accepts a post request, then checks if the request has any data. 
+3. if data is present, then the app sends a text response to the user who posted. The response shows CoC conventions text that Matt Hoffman usually sends on the #job-board channel. 
 
-    Example of data is a username: @johnsmith. 
-2. if data is present, then the app sends a text response to the user who posted. The response alos shows CoC conventions text that Matt usually sends on the #job-board  channel. 
+....
