@@ -1,4 +1,4 @@
-from flask import Flask, abort, make_response, request
+from flask import Flask, abort, make_response, request, jsonify
 import ast
 
 app = Flask(__name__)
@@ -12,10 +12,12 @@ def home():
 
 @app.route("/job-bot", methods=['POST'])
 def post():
-    print(request.headers)
+    # print("HEADERS", request.headers)
     data = request.get_data().decode('utf-8')
-    print(data.split('&'))
-    return str(data.split('&'))
+    ss = request.json
+    print(ss)
+
+    return "OK!"
     # if request.data:
     #     data = request.get_json() #ast.literal_eval(request.data.decode("utf-8"))
     #     print('te', data)
