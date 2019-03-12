@@ -1,5 +1,7 @@
 from flask import Flask, abort, make_response, request, jsonify
 import ast
+import json
+import urllib
 
 app = Flask(__name__)
 
@@ -12,23 +14,31 @@ def home():
 
 @app.route("/job-bot", methods=['POST'])
 def post():
-    # print("HEADERS", request.headers)
-    data = request.get_data().decode('utf-8')
-    ss = request.json
-    print(ss)
-
-    return "OK!"
-    # if request.data:
-    #     data = request.get_json() #ast.literal_eval(request.data.decode("utf-8"))
-    #     print('te', data)
-    #     return generate_convention(data)
-    # else:
-    #     return abort(400, "This is a Bad request!")
+    if request.get_data():
+        # print("HEADERS", request.headers)
+        data = request.get_data().decode('utf-8')
+        return generate_convention(data)
+    else:
+        return "_Oops! Type /job-bot @username!_"
 
 
 def generate_convention(data):
-    conv = "Hi " + data['text'] + "! HERE IS THE CONVENTION. STICK TO IT!\n"
-    return make_response(conv, 201)
+    json_data = urllib.parse.parse_qs(data)
+    print(json_data)
+    conv = "Hi <@" + ''.join(json_data['user_id']) + "> ! HERE IS THE CONVENTION. STICK TO IT!\n\n"
+
+    static_msg = """
+    *Job Posting Conventions with examples*
+    Principal Posters:
+    [Principal] [Company Name] [Website or Link to Job Posting or Job Description Text] [Contact Information or Offer to Discuss in DMs]
+    
+    Example: [Principal] [SpaceX] [www.spacex.com] [www.linktojobposting.com] [Email Elon or feel free to DM]
+    Third Party Recruiters:
+    [Third Party Recruiter] [Recruiting Company Name] [Recruiting Company Website] [Job Description Text or Link to Job Description] [Contact Information or Offer to Discuss in DMs]
+    
+    Example: [Third Party Recruiter] [re-factor] [re-factor.co] [Build Software for shuttle launches, etc.] [Email me at matt@re-factor.co or feel free to direct message for details]
+    """
+    return make_response(conv+static_msg, 201)
 
 
 if __name__ == "__main__":
@@ -52,3 +62,4 @@ token=gIkuvaNzQIHg97ATvDxqgjtO
 &response_url=https://hooks.slack.com/commands/1234/5678
 &trigger_id=13345224609.738474920.8088930838d88f008e0
 """
+
