@@ -21,5 +21,10 @@ Example usage: /job-bot @username. /job-bot @janesmith.
     b. otherwise, return the _Usage_ message: "_Oops! Type /job-bot @username!_"
 
 
+_here is the slash command settings page in the chijobtest slack workspace:_
+
+https://chijobtest.slack.com/apps/A0F82E8CA-slash-commands?next_id=0
+
+Anyone who has access to the workspace can edit the slash command settings, particularly the URL to send the request to. That way, anyone on this project can test the functionality and make changes. 
 
 also, everything is customizable i.e, command name, response message etc. 
